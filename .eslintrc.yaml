@@ -26,4 +26,15 @@ rules:
       arrowParens: avoid
 
   '@typescript-eslint/no-namespace': off
+  '@typescript-eslint/explicit-function-return-type': error
+  '@typescript-eslint/explicit-member-accessibility': error
+  '@typescript-eslint/member-ordering': warn
   camelcase: warn
+  no-console: warn
+  array-callback-return: error
+  complexity:
+    - warn
+    - max: 15
+  no-implicit-globals: warn
+  require-await: warn
+  no-shadow: warn

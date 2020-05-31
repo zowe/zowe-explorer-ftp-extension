@@ -29,12 +29,13 @@ import { CoreUtils } from "@zowe/zos-ftp-for-zowe-cli/lib/api/CoreUtils";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export class FtpUssApi implements ZoweExplorerApi.IUss {
+    private session?: imperative.Session;
+
+    public constructor(public profile?: imperative.IProfileLoaded) {}
+
     public static getProfileTypeName(): string {
         return "zftp";
     }
-
-    private session?: imperative.Session;
-    constructor(public profile?: imperative.IProfileLoaded) {}
 
     public getSession(profile?: imperative.IProfileLoaded): imperative.Session {
         if (!this.session) {
@@ -77,7 +78,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
         return result;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/require-await
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/require-await, require-await
     public async isFileTagBinOrAscii(ussFilePath: string): Promise<boolean> {
         return false; // TODO: needs to be implemented checking file type
     }
@@ -119,47 +120,44 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
         const transferType = binary ? "binary" : "ascii";
         const result = this.getDefaultResponse();
         const connection = await this.ftpClient(this.checkedProfile());
-        if (connection) {
-            // Save-Save with FTP requires loading the file first
-            if (returnEtag && etag) {
-                const tmpFileName = tmp.tmpNameSync();
-                const options: zowe.IDownloadOptions = {
-                    binary,
-                    file: tmpFileName
-                };
-                const loadResult = await this.getContents(ussFilePath, options);
-                if (
-                    loadResult &&
-                    loadResult.success &&
-                    loadResult.apiResponse &&
-                    loadResult.apiResponse.etag
-                ) {
-                    if (loadResult.apiResponse.etag !== etag) {
-                        // TODO: extension.ts should not check for zosmf errors.
-                        throw new Error("Rest API failure with HTTP(S) status 412");
-                    }
-                }
-            }
-            let content: Buffer = imperative.IO.readFileSync(
-                inputFilePath,
-                undefined,
-                binary
-            );
-            if (!binary) {
-                // if we're not in binary mode, we need carriage returns to avoid errors
-                content = Buffer.from(
-                    CoreUtils.addCarriageReturns(content.toString())
-                );
-            }
-            await connection.uploadDataset(content, ussFilePath, transferType);
-            result.success = true;
-            if (returnEtag) {
-                result.apiResponse.etag = await this.hashFile(inputFilePath);
-            }
-            result.commandResponse = "File updated.";
-        } else {
+        if (!connection) {
             throw new Error(result.commandResponse);
         }
+        // Save-Save with FTP requires loading the file first
+        if (returnEtag && etag) {
+            const tmpFileName = tmp.tmpNameSync();
+            const options: zowe.IDownloadOptions = {
+                binary,
+                file: tmpFileName
+            };
+            const loadResult = await this.getContents(ussFilePath, options);
+            if (
+                loadResult &&
+                loadResult.success &&
+                loadResult.apiResponse &&
+                loadResult.apiResponse.etag &&
+                loadResult.apiResponse.etag !== etag
+            ) {
+                // TODO: extension.ts should not check for zosmf errors.
+                throw new Error("Rest API failure with HTTP(S) status 412");
+            }
+        }
+        let content: Buffer = imperative.IO.readFileSync(
+            inputFilePath,
+            undefined,
+            binary
+        );
+        if (!binary) {
+            // if we're not in binary mode, we need carriage returns to avoid errors
+            content = Buffer.from(CoreUtils.addCarriageReturns(content.toString()));
+        }
+        await connection.uploadDataset(content, ussFilePath, transferType);
+        result.success = true;
+        if (returnEtag) {
+            result.apiResponse.etag = await this.hashFile(inputFilePath);
+        }
+        result.commandResponse = "File updated.";
+
         return result;
     }
 
@@ -237,19 +235,6 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
         return result;
     }
 
-    private async deleteDirectory(ussPath: string, connection: any): Promise<any> {
-        const files = (await connection.listDataset(ussPath)) as any[];
-        for (const file of files) {
-            const filePath = path.join(ussPath, file.name);
-            if (file.isDirectory) {
-                await this.deleteDirectory(filePath, connection);
-            } else {
-                await connection.deleteDataset(filePath);
-            }
-        }
-        await connection.deleteDataset(ussPath);
-    }
-
     public async rename(
         currentUssPath: string,
         newUssPath: string
@@ -264,6 +249,19 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
             throw new Error(result.commandResponse);
         }
         return result;
+    }
+
+    private async deleteDirectory(ussPath: string, connection: any): Promise<any> {
+        const files = (await connection.listDataset(ussPath)) as any[];
+        for (const file of files) {
+            const filePath = path.join(ussPath, file.name);
+            if (file.isDirectory) {
+                await this.deleteDirectory(filePath, connection);
+            } else {
+                await connection.deleteDataset(filePath);
+            }
+        }
+        await connection.deleteDataset(ussPath);
     }
 
     private getDefaultResponse(): zowe.IZosFilesResponse {
@@ -285,7 +283,8 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
 
     private async ftpClient(profile: imperative.IProfileLoaded): Promise<any> {
         const ftpProfile = profile.profile as IZosFTPProfile;
-        return FTPConfig.connectFromArguments({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return await FTPConfig.connectFromArguments({
             host: ftpProfile.host,
             user: ftpProfile.user,
             password: ftpProfile.password,
@@ -295,7 +294,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
     }
 
     private async hashFile(filename: string): Promise<string> {
-        return new Promise(resolve => {
+        return await new Promise(resolve => {
             const hash = crypto.createHash("sha1");
             const input = fs.createReadStream(filename);
             input.on("readable", () => {

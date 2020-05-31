@@ -8,12 +8,13 @@
  * Copyright Contributors to the Zowe Project.                                     *
  *                                                                                 *
  */
-import * as vscode from 'vscode';
-import { ZoweExplorerApi } from './api/ZoweExplorerApi';
-import { FtpUssApi } from './ZoweExplorerFtpApi';
+import * as vscode from "vscode";
+import { ZoweExplorerApi } from "./api/ZoweExplorerApi";
+import { FtpUssApi } from "./ZoweExplorerFtpApi";
 
-export function activate(context: vscode.ExtensionContext) {
-    registerFtpApi();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function activate(context: vscode.ExtensionContext): void {
+    void registerFtpApi();
 }
 
 /**
@@ -22,24 +23,26 @@ export function activate(context: vscode.ExtensionContext) {
  */
 async function registerFtpApi(): Promise<boolean> {
     const zoweExplorerApi = vscode.extensions.getExtension(
-        'Zowe.vscode-extension-for-zowe'
+        "Zowe.vscode-extension-for-zowe"
     );
+
     if (zoweExplorerApi && zoweExplorerApi.exports) {
-        const importedApi: ZoweExplorerApi.IApiRegisterClient =
-            zoweExplorerApi.exports;
+        const importedApi = zoweExplorerApi.exports as ZoweExplorerApi.IApiRegisterClient;
         importedApi.registerUssApi(new FtpUssApi());
         // check as getExplorerExtenderApi().reloadProfiles() was add in Zowe Explorer 1.5 only
-        if (importedApi.getExplorerExtenderApi &&
-            importedApi.getExplorerExtenderApi().reloadProfiles) {
+        if (
+            importedApi.getExplorerExtenderApi &&
+            importedApi.getExplorerExtenderApi().reloadProfiles
+        ) {
             await importedApi.getExplorerExtenderApi().reloadProfiles();
         }
-        vscode.window.showInformationMessage(
+        void vscode.window.showInformationMessage(
             "Zowe Explorer was modified for FTP support."
         );
         return true;
     }
-    vscode.window.showInformationMessage(
-        'Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API.'
+    void vscode.window.showInformationMessage(
+        "Zowe Explorer was not found: either it is not installed or you are using an older version without extensibility API."
     );
     return false;
 }

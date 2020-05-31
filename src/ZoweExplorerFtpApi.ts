@@ -9,22 +9,28 @@
  *                                                                                 *
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as crypto from 'crypto';
-import * as tmp from 'tmp';
-import * as zowe from '@zowe/cli';
-import * as imperative from '@zowe/imperative';
+import * as fs from "fs";
+import * as path from "path";
+import * as crypto from "crypto";
+import * as tmp from "tmp";
+import * as zowe from "@zowe/cli";
+import * as imperative from "@zowe/imperative";
 
-import { ZoweExplorerApi } from './api/ZoweExplorerApi';
-// tslint:disable: no-submodule-imports
-import { IZosFTPProfile } from '@zowe/zos-ftp-for-zowe-cli/lib/api/doc/IZosFTPProfile';
-import { FTPConfig } from '@zowe/zos-ftp-for-zowe-cli/lib/api/FTPConfig';
-import { StreamUtils } from '@zowe/zos-ftp-for-zowe-cli/lib/api/StreamUtils';
-import { CoreUtils } from '@zowe/zos-ftp-for-zowe-cli/lib/api/CoreUtils';
+import { ZoweExplorerApi } from "./api/ZoweExplorerApi";
+import { IZosFTPProfile } from "@zowe/zos-ftp-for-zowe-cli/lib/api/doc/IZosFTPProfile";
+import { FTPConfig } from "@zowe/zos-ftp-for-zowe-cli/lib/api/FTPConfig";
+import { StreamUtils } from "@zowe/zos-ftp-for-zowe-cli/lib/api/StreamUtils";
+import { CoreUtils } from "@zowe/zos-ftp-for-zowe-cli/lib/api/CoreUtils";
+
+// The Zowe FTP CLI plugin is written and uses mostly JavaScript, so relax the rules here.
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export class FtpUssApi implements ZoweExplorerApi.IUss {
     public static getProfileTypeName(): string {
-        return 'zftp';
+        return "zftp";
     }
 
     private session?: imperative.Session;
@@ -35,7 +41,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
             const ftpProfile = (profile || this.profile)?.profile;
             if (!ftpProfile) {
                 throw new Error(
-                    'Internal error: ZoweVscFtpUssRestApi instance was not initialized with a valid Zowe profile.'
+                    "Internal error: ZoweVscFtpUssRestApi instance was not initialized with a valid Zowe profile."
                 );
             }
             this.session = new imperative.Session({
@@ -53,9 +59,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
         return FtpUssApi.getProfileTypeName();
     }
 
-    public async fileList(
-        ussFilePath: string
-    ): Promise<zowe.IZosFilesResponse> {
+    public async fileList(ussFilePath: string): Promise<zowe.IZosFilesResponse> {
         const result = this.getDefaultResponse();
         const connection = await this.ftpClient(this.checkedProfile());
         if (connection) {
@@ -73,6 +77,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
         return result;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/require-await
     public async isFileTagBinOrAscii(ussFilePath: string): Promise<boolean> {
         return false; // TODO: needs to be implemented checking file type
     }
@@ -81,7 +86,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
         ussFilePath: string,
         options: zowe.IDownloadOptions
     ): Promise<zowe.IZosFilesResponse> {
-        const transferType = options.binary ? 'binary' : 'ascii';
+        const transferType = options.binary ? "binary" : "ascii";
         const targetFile = options.file;
         const result = this.getDefaultResponse();
         const connection = await this.ftpClient(this.checkedProfile());
@@ -95,7 +100,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
             const writable = fs.createWriteStream(targetFile);
             await StreamUtils.streamToStream(1, contentStreamPromise, writable);
             result.success = true;
-            result.commandResponse = '';
+            result.commandResponse = "";
             result.apiResponse.etag = await this.hashFile(targetFile);
         } else {
             throw new Error(result.commandResponse);
@@ -111,7 +116,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
         etag?: string,
         returnEtag?: boolean
     ): Promise<zowe.IZosFilesResponse> {
-        const transferType = binary ? 'binary' : 'ascii';
+        const transferType = binary ? "binary" : "ascii";
         const result = this.getDefaultResponse();
         const connection = await this.ftpClient(this.checkedProfile());
         if (connection) {
@@ -131,9 +136,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
                 ) {
                     if (loadResult.apiResponse.etag !== etag) {
                         // TODO: extension.ts should not check for zosmf errors.
-                        throw new Error(
-                            'Rest API failure with HTTP(S) status 412'
-                        );
+                        throw new Error("Rest API failure with HTTP(S) status 412");
                     }
                 }
             }
@@ -153,7 +156,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
             if (returnEtag) {
                 result.apiResponse.etag = await this.hashFile(inputFilePath);
             }
-            result.commandResponse = 'File updated.';
+            result.commandResponse = "File updated.";
         } else {
             throw new Error(result.commandResponse);
         }
@@ -163,15 +166,14 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
     public async uploadDirectory(
         inputDirectoryPath: string,
         ussDirectoryPath: string,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         options: zowe.IUploadOptions
     ): Promise<zowe.IZosFilesResponse> {
         let result = this.getDefaultResponse();
 
         // Check if inputDirectory is directory
         if (!imperative.IO.isDir(inputDirectoryPath)) {
-            throw new Error(
-                'The local directory path provided does not exist.'
-            );
+            throw new Error("The local directory path provided does not exist.");
         }
         // getting list of files from directory
         const files = zowe.ZosFilesUtils.getFileListFromPath(
@@ -182,7 +184,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
         for (const file of files) {
             const relativePath = path
                 .relative(inputDirectoryPath, file)
-                .replace(/\\/g, '/');
+                .replace(/\\/g, "/");
             const putResult = await this.putContents(
                 file,
                 path.posix.join(ussDirectoryPath, relativePath)
@@ -195,19 +197,20 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
     public async create(
         ussPath: string,
         type: string,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mode?: string
     ): Promise<zowe.IZosFilesResponse> {
         const result = this.getDefaultResponse();
         const connection = await this.ftpClient(this.checkedProfile());
         if (connection && connection.client) {
-            if (type === 'directory') {
+            if (type === "directory") {
                 await connection.client.mkdir(ussPath);
-            } else if (type === 'file') {
-                const content = Buffer.from(CoreUtils.addCarriageReturns(''));
-                await connection.uploadDataset(content, ussPath, 'ascii');
+            } else if (type === "file") {
+                const content = Buffer.from(CoreUtils.addCarriageReturns(""));
+                await connection.uploadDataset(content, ussPath, "ascii");
             }
             result.success = true;
-            result.commandResponse = 'Directory or file created.';
+            result.commandResponse = "Directory or file created.";
         } else {
             throw new Error(result.commandResponse);
         }
@@ -227,17 +230,14 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
                 await connection.deleteDataset(ussPath);
             }
             result.success = true;
-            result.commandResponse = 'Delete completed.';
+            result.commandResponse = "Delete completed.";
         } else {
             throw new Error(result.commandResponse);
         }
         return result;
     }
 
-    private async deleteDirectory(
-        ussPath: string,
-        connection: any
-    ): Promise<any> {
+    private async deleteDirectory(ussPath: string, connection: any): Promise<any> {
         const files = (await connection.listDataset(ussPath)) as any[];
         for (const file of files) {
             const filePath = path.join(ussPath, file.name);
@@ -259,7 +259,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
         if (connection) {
             await connection.rename(currentUssPath, newUssPath);
             result.success = true;
-            result.commandResponse = 'Rename completed.';
+            result.commandResponse = "Rename completed.";
         } else {
             throw new Error(result.commandResponse);
         }
@@ -269,7 +269,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
     private getDefaultResponse(): zowe.IZosFilesResponse {
         return {
             success: false,
-            commandResponse: 'Could not get a valid FTP connection.',
+            commandResponse: "Could not get a valid FTP connection.",
             apiResponse: {}
         };
     }
@@ -277,7 +277,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
     private checkedProfile(): imperative.IProfileLoaded {
         if (!this.profile?.profile) {
             throw new Error(
-                'Internal error: ZoweVscFtpUssRestApi instance was not initialized with a valid Zowe profile.'
+                "Internal error: ZoweVscFtpUssRestApi instance was not initialized with a valid Zowe profile."
             );
         }
         return this.profile;
@@ -296,14 +296,14 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
 
     private async hashFile(filename: string): Promise<string> {
         return new Promise(resolve => {
-            const hash = crypto.createHash('sha1');
+            const hash = crypto.createHash("sha1");
             const input = fs.createReadStream(filename);
-            input.on('readable', () => {
+            input.on("readable", () => {
                 const data = input.read();
                 if (data) {
                     hash.update(data);
                 } else {
-                    resolve(`${hash.digest('hex')}`);
+                    resolve(`${hash.digest("hex")}`);
                 }
             });
         });

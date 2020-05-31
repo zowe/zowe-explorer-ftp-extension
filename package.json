@@ -1,48 +1,52 @@
 {
-	"name": "zowe-explorer-ftp-extension",
-	"displayName": "Zowe Explorer Extension for FTP",
-	"publisher": "Zowe",
-	"author": "Zowe",
-	"license": "EPL-2.0",
-	"description": "Adds zFTP support to Zowe Explorer demonstrating how to extend the Zowe Explorer using its extensibility API.",
-	"version": "1.5.1",
-	"icon": "zowe_logo.png",
-	"repository": {
-		"url": "https://github.com/phaumer/zowe-explorer-ftp-extension"
-	},
-	"engines": {
-		"vscode": "^1.44.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"*"
-	],
-	"main": "./out/extension.js",
-	"contributes": {},
-	"extensionDependencies": [
-		"Zowe.vscode-extension-for-zowe"
-	],
-	"scripts": {
-		"vscode:prepublish": "npm run build",
-		"build": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"package": "vsce package"
-	},
-	"dependencies": {
-		"@zowe/cli": "6.13.0",
-		"@zowe/zos-ftp-for-zowe-cli": "1.0.2",
-		"tmp": "0.2.0"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.1.1",
-		"@types/node": "^10.17.17",
-		"@types/vscode": "^1.44.0",
-		"@types/tmp": "0.2.0",
-		"glob": "^7.1.6",
-		"typescript": "^3.8.3",
-		"tslint": "6.1.2",
-		"vsce": "^1.75.0"
-	}
+  "name": "zowe-explorer-ftp-extension",
+  "displayName": "Zowe Explorer Extension for FTP",
+  "publisher": "Zowe",
+  "author": "Zowe",
+  "license": "EPL-2.0",
+  "description": "Adds zFTP support to Zowe Explorer demonstrating how to extend the Zowe Explorer using its extensibility API.",
+  "version": "1.5.2",
+  "icon": "zowe_logo.png",
+  "repository": {
+    "url": "https://github.com/phaumer/zowe-explorer-ftp-extension"
+  },
+  "engines": {
+    "vscode": "^1.45.1"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {},
+  "extensionDependencies": [
+    "Zowe.vscode-extension-for-zowe"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run build && npm run lint",
+    "build": "tsc -p ./",
+    "lint": "eslint . --ext .ts",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "@zowe/cli": "6.13.0",
+    "@zowe/zos-ftp-for-zowe-cli": "1.1.0",
+    "tmp": "0.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^10.17.24",
+    "@types/tmp": "0.2.0",
+    "@types/vscode": "^1.45.1",
+    "@typescript-eslint/eslint-plugin": "^3.0.2",
+    "@typescript-eslint/parser": "^3.0.2",
+    "eslint": "^7.1.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.3",
+    "vsce": "^1.75.0"
+  }
 }

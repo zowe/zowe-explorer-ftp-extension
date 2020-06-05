@@ -1,12 +1,12 @@
 root: true
-parser: '@typescript-eslint/parser'
+parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 6
   sourceType: module
   project:
-    - './tsconfig.json'
+    - "./tsconfig.json"
 plugins:
-  - '@typescript-eslint'
+  - "@typescript-eslint"
 extends:
   - eslint:recommended
   - plugin:@typescript-eslint/recommended
@@ -16,19 +16,10 @@ extends:
 rules:
   prettier/prettier:
     - error
-    - bracketSpacing: true
-      singleQuote: false
-      quoteProps: as-needed
-      semi: true
-      endOfLine: auto
-      printWidth: 85
-      trailingComma: none
-      arrowParens: avoid
-
-  '@typescript-eslint/no-namespace': off
-  '@typescript-eslint/explicit-function-return-type': error
-  '@typescript-eslint/explicit-member-accessibility': error
-  '@typescript-eslint/member-ordering': warn
+  "@typescript-eslint/no-namespace": off
+  "@typescript-eslint/explicit-function-return-type": error
+  "@typescript-eslint/explicit-member-accessibility": error
+  "@typescript-eslint/member-ordering": warn
   camelcase: warn
   no-console: warn
   array-callback-return: error

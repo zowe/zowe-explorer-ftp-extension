@@ -16,13 +16,13 @@ rules:
   "@typescript-eslint/no-namespace": off
   "@typescript-eslint/explicit-function-return-type": error
   "@typescript-eslint/explicit-member-accessibility": error
-  "@typescript-eslint/member-ordering": warn
-  camelcase: warn
-  no-console: warn
+  "@typescript-eslint/member-ordering": error
+  camelcase: error
+  no-console: error
   array-callback-return: error
   complexity:
-    - warn
+    - error
     - max: 15
-  no-implicit-globals: warn
-  require-await: warn
-  no-shadow: warn
+  no-implicit-globals: error
+  require-await: error
+  no-shadow: error

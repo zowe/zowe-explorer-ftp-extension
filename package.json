@@ -27,9 +27,7 @@
   "scripts": {
     "vscode:prepublish": "npm run build && npm run lint",
     "build": "tsc -p ./",
-    "lint": "lint:prettier && lint:eslint",
-    "lint:eslint": "eslint . --ext .ts",
-    "lint:prettier": "prettier --check .",
+    "lint": "concurrently -n '_eslint_,prettier' 'eslint . --ext .ts' 'prettier --check .'",
     "pretty": "prettier --write .",
     "watch": "tsc -watch -p ./",
     "package": "vsce package"
@@ -37,6 +35,7 @@
   "dependencies": {
     "@zowe/cli": "6.13.0",
     "@zowe/zos-ftp-for-zowe-cli": "1.1.0",
+    "concurrently": "^5.2.0",
     "tmp": "0.2.1"
   },
   "devDependencies": {

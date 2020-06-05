@@ -27,7 +27,10 @@
   "scripts": {
     "vscode:prepublish": "npm run build && npm run lint",
     "build": "tsc -p ./",
-    "lint": "eslint . --ext .ts",
+    "lint": "lint:prettier && lint:eslint",
+    "lint:eslint": "eslint . --ext .ts",
+    "lint:prettier": "prettier --check .",
+    "pretty": "prettier --write .",
     "watch": "tsc -watch -p ./",
     "package": "vsce package"
   },

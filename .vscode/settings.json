@@ -3,9 +3,7 @@
   "typescript.tsc.autoDetect": "off",
   "typescript.tsdk": "node_modules/typescript/lib",
   // Standardize on the Prettier formatter
-  "[typescript,json,yaml]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "typescript.format.enable": false,
   // Enforce eslint and prettier on save
   "editor.formatOnSave": true,

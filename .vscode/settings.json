@@ -7,9 +7,6 @@
   "typescript.format.enable": false,
   // Enforce eslint and prettier on save
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
   "eslint.alwaysShowStatus": true,
   // In Zowe we need to sign all commits
   "git.alwaysSignOff": true

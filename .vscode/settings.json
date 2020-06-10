@@ -4,7 +4,6 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   // Standardize on the Prettier formatter
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "typescript.format.enable": false,
   // Enforce eslint and prettier on save
   "editor.formatOnSave": true,
   "eslint.alwaysShowStatus": true,

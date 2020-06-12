@@ -3,15 +3,9 @@
   "typescript.tsc.autoDetect": "off",
   "typescript.tsdk": "node_modules/typescript/lib",
   // Standardize on the Prettier formatter
-  "[typescript,json,yaml]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "typescript.format.enable": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   // Enforce eslint and prettier on save
   "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
   "eslint.alwaysShowStatus": true,
   // In Zowe we need to sign all commits
   "git.alwaysSignOff": true

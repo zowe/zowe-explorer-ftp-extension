@@ -50,7 +50,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
                 port: ftpProfile.port,
                 user: ftpProfile.user,
                 password: ftpProfile.password,
-                rejectUnauthorized: ftpProfile.rejectUnauthorized
+                rejectUnauthorized: ftpProfile.rejectUnauthorized,
             });
         }
         return this.session;
@@ -67,11 +67,11 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
             const response: any[] = await connection.listDataset(ussFilePath);
             if (response) {
                 result.success = true;
-                result.apiResponse.items = response.map(element => ({
+                result.apiResponse.items = response.map((element) => ({
                     name: element.name,
                     size: element.size,
                     mtime: element.lastModified,
-                    mode: element.permissions
+                    mode: element.permissions,
                 }));
             }
         }
@@ -128,7 +128,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
             const tmpFileName = tmp.tmpNameSync();
             const options: zowe.IDownloadOptions = {
                 binary,
-                file: tmpFileName
+                file: tmpFileName,
             };
             const loadResult = await this.getContents(ussFilePath, options);
             if (
@@ -268,7 +268,7 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
         return {
             success: false,
             commandResponse: "Could not get a valid FTP connection.",
-            apiResponse: {}
+            apiResponse: {},
         };
     }
 
@@ -289,12 +289,12 @@ export class FtpUssApi implements ZoweExplorerApi.IUss {
             user: ftpProfile.user,
             password: ftpProfile.password,
             port: ftpProfile.port,
-            secureFtp: ftpProfile.secureFtp
+            secureFtp: ftpProfile.secureFtp,
         });
     }
 
     private async hashFile(filename: string): Promise<string> {
-        return await new Promise(resolve => {
+        return await new Promise((resolve) => {
             const hash = crypto.createHash("sha1");
             const input = fs.createReadStream(filename);
             input.on("readable", () => {

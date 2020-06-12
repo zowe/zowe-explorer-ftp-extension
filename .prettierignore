@@ -1,2 +1,2 @@
-*.md
-*.js
+out
+package-lock.json

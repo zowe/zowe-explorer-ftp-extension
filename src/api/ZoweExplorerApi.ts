@@ -248,7 +248,7 @@ export namespace ZoweExplorerApi {
         copyDataSetMember(
             {
                 dataSetName: fromDataSetName,
-                memberName: fromMemberName
+                memberName: fromMemberName,
             }: zowe.IDataSet,
             { dataSetName: toDataSetName, memberName: toMemberName }: zowe.IDataSet,
             options?: { replace?: boolean }

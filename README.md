@@ -20,9 +20,9 @@ This example is using the Zowe FTP CLI plugin as a dependency to provide FTP cap
   ```bash
   zowe profiles create zftp <profile name> -H <host> -u <user> -p <password> -P <port>
   ```
-- Clone this `vscode-extension-for-zowe-api-sample` repo in a parallel directory:
+- Clone this `vscode-extension-for-zowe-api-sample` repo:
   ```bash
-  git clone git@github.com:phaumer/vscode-extension-for-zowe-api-sample.git
+  git clone git@github.com:zowe/zowe-explorer-ftp-extension.git
   ```
 - Build the VS Code extension with
   ```bash
@@ -43,6 +43,6 @@ This example is using the Zowe FTP CLI plugin as a dependency to provide FTP cap
 
 TBD, but the rough steps would be:
 
-- Copy the file `src/ZoweExplorerAPI.ts`
+- Copy the file `src/api/ZoweExplorerAPI.ts`
 - Implement classes that implement any of the `IMvs`, `IUss`, `IJes` interfaces.
 - Implement a registration method similar to `registerFtpApi()` in `extension.ts` that queries the Zowe Explorer API and calls the registration method.

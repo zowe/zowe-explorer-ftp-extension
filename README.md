@@ -11,7 +11,7 @@ This example will ony work with version 1.2.0 or newer of the Zowe Explorer.
 - Install it from the VS Code Marketplace following [the instructions described here](https://marketplace.visualstudio.com/items?itemName=Zowe.vscode-extension-for-zowe).
 - Test the Zowe Explorer using z/OSMF CLI profiles if you have z/OSMF available.
 
-### Build this extension
+### Create a Zowe FTP profile
 
 This example is using the Zowe FTP CLI plugin as a dependency to provide FTP capabilities.
 
@@ -20,13 +20,18 @@ This example is using the Zowe FTP CLI plugin as a dependency to provide FTP cap
   ```bash
   zowe profiles create zftp <profile name> -H <host> -u <user> -p <password> -P <port>
   ```
-- Clone this `vscode-extension-for-zowe-api-sample` repo:
+
+### Build this extension
+
+This repo uses [Yarn](https://yarnpkg.com/) for building.
+
+- Clone this `zowe-explorer-ftp-extension` repo:
   ```bash
   git clone git@github.com:zowe/zowe-explorer-ftp-extension.git
   ```
 - Build the VS Code extension with
   ```bash
-  npm install && npm run build && npm run package
+  yarn && yarn package
   ```
 - Install the vsix file using the `Preferences > Extensions` menu or just run this extension from VS Code that has the Zowe Explorer built from the AI branch running with the `<F5>` key.
 
